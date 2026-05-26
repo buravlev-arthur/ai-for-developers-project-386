@@ -1,0 +1,16 @@
+{
+  "name": "event-calendar-api",
+  "version": "1.0.0",
+  "description": "TypeSpec API contract for Event Calendar project",
+  "scripts": {
+    "compile": "tsp compile src/tsp/main.tsp --emit @typespec/openapi3",
+    "watch": "tsp compile src/tsp/main.tsp --watch"
+  },
+  "dependencies": {
+    "@typespec/compiler": "^1.11.0",
+    "@typespec/http": "^1.11.0",
+    "@typespec/rest": "^0.81.0",
+    "@typespec/openapi3": "^1.11.0"
+  },
+  "private": true
+}
