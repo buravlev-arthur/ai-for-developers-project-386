@@ -1,6 +1,6 @@
 parameters:
   main:
-    default: ./src/tsp/main.tsp
+    default: ./api/main.tsp
 emit:
   - "@typespec/openapi3"
 options:
