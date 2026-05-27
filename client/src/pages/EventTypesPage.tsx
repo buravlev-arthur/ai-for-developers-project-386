@@ -15,7 +15,11 @@ export default function EventTypesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleCreate = async (values: { name: string; description?: string; durationMinutes: number }) => {
+  const handleCreate = async (values: {
+    name: string;
+    description?: string;
+    durationMinutes: number;
+  }) => {
     try {
       const created = await createEventType(values);
       setEventTypes((prev) => [...prev, created]);
@@ -29,14 +33,23 @@ export default function EventTypesPage() {
 
   const columns = [
     { title: 'Название', dataIndex: 'name', key: 'name' },
-    { title: 'Описание', dataIndex: 'description', key: 'description', render: (v: string | null) => v ?? '—' },
+    {
+      title: 'Описание',
+      dataIndex: 'description',
+      key: 'description',
+      render: (v: string | null) => v ?? '—',
+    },
     { title: 'Длительность (мин)', dataIndex: 'durationMinutes', key: 'durationMinutes' },
   ];
 
   return (
     <Card
       title="Типы событий"
-      extra={<Button type="primary" onClick={() => setModalOpen(true)}>Создать</Button>}
+      extra={
+        <Button type="primary" onClick={() => setModalOpen(true)}>
+          Создать
+        </Button>
+      }
     >
       <Table dataSource={eventTypes} columns={columns} rowKey="id" loading={loading} />
 

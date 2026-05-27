@@ -15,9 +15,7 @@ export default function OwnerCalendarPage() {
   }, []);
 
   const dateCellRender = (value: Dayjs) => {
-    const dayAppointments = appointments.filter((a) =>
-      value.isSame(a.timeSlot.timeStart, 'day'),
-    );
+    const dayAppointments = appointments.filter((a) => value.isSame(a.timeSlot.timeStart, 'day'));
 
     return (
       <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>

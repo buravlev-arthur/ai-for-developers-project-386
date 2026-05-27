@@ -36,6 +36,8 @@ client/
  │   ├── main.tsx               # Точка входа (инициализация MSW + React)
  │   ├── index.css              # Глобальные стили (сброс body margin)
  │   └── vite-env.d.ts
+├── .prettierrc               # Настройки форматирования Prettier
+├── eslint.config.js          # Flat config ESLint (JS+TS+React+Prettier)
 ├── index.html
 ├── package.json
 ├── tsconfig.json
@@ -50,6 +52,11 @@ npm run client:dev
 
 # Сборка фронтенда
 npm run client:build
+
+# Линтинг и форматирование
+npm run client:lint           # Проверка ESLint
+npm run client:lint:fix       # Автоисправление ESLint
+npm run client:format         # Форматирование Prettier
 ```
 
 ### Стек технологий
@@ -61,4 +68,6 @@ npm run client:build
 - Библиотека **Day.js**;
 - UI-библиотека **Ant Design (antd)**;
 - Mock-сервис: **MSW (Mock Service Worker)**;
-- Работа с API-запросами: **axios**.
+- Работа с API-запросами: **axios**;
+- Линтер: **ESLint 9+** (flat config);
+- Форматирование: **Prettier**.

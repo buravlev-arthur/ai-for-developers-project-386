@@ -9,7 +9,11 @@ export function listEventTypes(): Promise<EventType[]> {
   return apiClient.get('/event-types').then((r) => r.data);
 }
 
-export function createEventType(data: { name: string; description?: string | null; durationMinutes: number }): Promise<EventType> {
+export function createEventType(data: {
+  name: string;
+  description?: string | null;
+  durationMinutes: number;
+}): Promise<EventType> {
   return apiClient.post('/event-types', data).then((r) => r.data);
 }
 

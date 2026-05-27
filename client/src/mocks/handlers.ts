@@ -12,12 +12,17 @@ const owner: Owner = {
 };
 
 const eventTypes: EventType[] = [
-  { id: '1', name: 'Консультация', description: 'Индивидуальная консультация', durationMinutes: 30 },
+  {
+    id: '1',
+    name: 'Консультация',
+    description: 'Индивидуальная консультация',
+    durationMinutes: 30,
+  },
   { id: '2', name: 'Встреча', description: null, durationMinutes: 60 },
   { id: '3', name: 'Вебинар', description: 'Групповой онлайн-вебинар', durationMinutes: 90 },
 ];
 
-let appointments: Appointment[] = [
+const appointments: Appointment[] = [
   {
     id: '1',
     eventType: eventTypes[0],
@@ -44,7 +49,11 @@ export const handlers = [
   }),
 
   http.post('/api/event-types', async ({ request }) => {
-    const body = (await request.json()) as { name: string; description?: string | null; durationMinutes: number };
+    const body = (await request.json()) as {
+      name: string;
+      description?: string | null;
+      durationMinutes: number;
+    };
     const newEventType: EventType = {
       id: String(eventTypes.length + 1),
       name: body.name,
@@ -73,7 +82,11 @@ export const handlers = [
   }),
 
   http.post('/api/appointments', async ({ request }) => {
-    const body = (await request.json()) as { eventTypeId: string; timeSlotId: string; guest: { email: string; username: string; comment?: string | null } };
+    const body = (await request.json()) as {
+      eventTypeId: string;
+      timeSlotId: string;
+      guest: { email: string; username: string; comment?: string | null };
+    };
     const eventType = eventTypes.find((et) => et.id === body.eventTypeId);
     const slot = slots.find((s) => s.id === body.timeSlotId);
 

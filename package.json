@@ -8,7 +8,10 @@
     "compile": "tsp compile api/main.tsp --emit @typespec/openapi3",
     "watch": "tsp compile api/main.tsp --watch",
     "client:dev": "npm run dev -w client",
-    "client:build": "npm run build -w client"
+    "client:build": "npm run build -w client",
+    "client:lint": "npm run lint -w client",
+    "client:lint:fix": "npm run lint:fix -w client",
+    "client:format": "npm run format -w client"
   },
   "dependencies": {
     "@typespec/compiler": "^1.11.0",

@@ -1,17 +1,44 @@
-import { useEffect, useState } from 'react';
-import { Card, Select, DatePicker, List, Button, Modal, Form, Input, message, Typography, Alert, Spin } from 'antd';
+import { useEffect, useState, useReducer } from 'react';
+import {
+  Card,
+  Select,
+  DatePicker,
+  List,
+  Button,
+  Modal,
+  Form,
+  Input,
+  message,
+  Typography,
+  Alert,
+  Spin,
+} from 'antd';
 import dayjs from 'dayjs';
 import { listEventTypes, listSlots, createAppointment } from '../api/endpoints';
 import type { EventType, Slot } from '../api/types';
 
 const { Title } = Typography;
 
+type SlotsState = { status: 'idle' } | { status: 'loading' } | { status: 'loaded'; data: Slot[] };
+
+type SlotsAction = { type: 'RESET' } | { type: 'LOAD' } | { type: 'DONE'; data: Slot[] };
+
+function slotsReducer(_state: SlotsState, action: SlotsAction): SlotsState {
+  switch (action.type) {
+    case 'RESET':
+      return { status: 'idle' };
+    case 'LOAD':
+      return { status: 'loading' };
+    case 'DONE':
+      return { status: 'loaded', data: action.data };
+  }
+}
+
 export default function GuestBookingPage() {
   const [eventTypes, setEventTypes] = useState<EventType[]>([]);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [slots, setSlots] = useState<Slot[]>([]);
-  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [slotsState, dispatch] = useReducer(slotsReducer, { status: 'idle' });
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [form] = Form.useForm();
@@ -22,13 +49,11 @@ export default function GuestBookingPage() {
 
   useEffect(() => {
     if (!selectedType || !selectedDate) {
-      setSlots([]);
+      dispatch({ type: 'RESET' });
       return;
     }
-    setSlotsLoading(true);
-    listSlots(selectedType, selectedDate)
-      .then(setSlots)
-      .finally(() => setSlotsLoading(false));
+    dispatch({ type: 'LOAD' });
+    listSlots(selectedType, selectedDate).then((data) => dispatch({ type: 'DONE', data }));
   }, [selectedType, selectedDate]);
 
   const handleBook = (slot: Slot) => {
@@ -55,7 +80,9 @@ export default function GuestBookingPage() {
 
   return (
     <div style={{ maxWidth: 600, margin: '40px auto', padding: 16 }}>
-      <Title level={2} style={{ textAlign: 'center' }}>Забронировать время</Title>
+      <Title level={2} style={{ textAlign: 'center' }}>
+        Забронировать время
+      </Title>
 
       <Card>
         <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
@@ -75,16 +102,22 @@ export default function GuestBookingPage() {
 
         {!selectedType || !selectedDate ? (
           <Alert message="Выберите тип события и дату для просмотра доступных слотов" type="info" />
-        ) : slotsLoading ? (
+        ) : slotsState.status === 'loading' ? (
           <Spin />
-        ) : slots.length === 0 ? (
+        ) : slotsState.status === 'idle' ? (
+          <Alert message="Нет доступных слотов на выбранную дату" type="warning" />
+        ) : slotsState.data.length === 0 ? (
           <Alert message="Нет доступных слотов на выбранную дату" type="warning" />
         ) : (
           <List
-            dataSource={slots}
+            dataSource={slotsState.data}
             renderItem={(slot) => (
               <List.Item
-                actions={[<Button type="primary" onClick={() => handleBook(slot)}>Забронировать</Button>]}
+                actions={[
+                  <Button key="book" type="primary" onClick={() => handleBook(slot)}>
+                    Забронировать
+                  </Button>,
+                ]}
               >
                 <List.Item.Meta
                   title={`${dayjs(slot.timeStart).format('HH:mm')} — ${dayjs(slot.timeEnd).format('HH:mm')}`}
