@@ -79,7 +79,7 @@ export default function GuestBookingPage() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: '40px auto', padding: 16 }}>
+    <div style={{ maxWidth: 600, margin: '0 auto', padding: 16 }}>
       <Title level={2} style={{ textAlign: 'center' }}>
         Забронировать время
       </Title>
