@@ -1,9 +1,10 @@
 import { useEffect, useState, useReducer } from 'react';
-import { Card, Calendar, List, Button, Modal, Form, Input, Spin, Avatar, Tag } from 'antd';
+import { Card, Calendar, List, Button, Modal, Form, Input, Spin, Avatar, Tag, Result } from 'antd';
 import { LeftOutlined, RightOutlined, UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 import { getOwner, listEventTypes, listSlots, createAppointment } from '../api/endpoints';
-import type { Owner, EventType, Slot } from '../api/types';
+import type { Owner, EventType, Slot, Appointment } from '../api/types';
 
 type SlotsState = { status: 'idle' } | { status: 'loading' } | { status: 'loaded'; data: Slot[] };
 
@@ -29,6 +30,9 @@ export default function GuestBookingPage() {
   const [slotsState, dispatch] = useReducer(slotsReducer, { status: 'idle' });
   const [modalOpen, setModalOpen] = useState(false);
   const [form] = Form.useForm();
+  const [bookingStatus, setBookingStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [bookingData, setBookingData] = useState<Appointment | null>(null);
+  const [errorText, setErrorText] = useState('');
 
   useEffect(() => {
     getOwner().then(setOwner);
@@ -52,7 +56,7 @@ export default function GuestBookingPage() {
   const handleSubmit = async (values: { email: string; username: string; comment?: string }) => {
     if (!selectedSlot || !selectedType) return;
     try {
-      await createAppointment({
+      const appointment = await createAppointment({
         eventTypeId: selectedType,
         timeSlotId: selectedSlot.id,
         guest: {
@@ -63,12 +67,69 @@ export default function GuestBookingPage() {
       });
       setModalOpen(false);
       form.resetFields();
+      setBookingData(appointment);
+      setBookingStatus('success');
     } catch {
-      // silent — no notifications per requirements
+      setModalOpen(false);
+      setErrorText('Не удалось создать бронь. Попробуйте ещё раз.');
+      setBookingStatus('error');
     }
   };
 
-  return (
+  const handleRetry = () => {
+    setBookingStatus('idle');
+    setErrorText('');
+  };
+
+  const handlePrint = () => {
+    if (!bookingData || !owner) return;
+    const win = window.open('', '_blank');
+    if (!win) return;
+    win.document.write(
+      [
+        '<html><head><title>Подтверждение брони</title>',
+        '<style>',
+        'body { font-family: "Segoe UI", Tahoma, sans-serif; padding: 40px; }',
+        'h1 { font-size: 24px; margin-bottom: 24px; }',
+        '.info { margin-bottom: 12px; }',
+        '.label { font-weight: 600; display: inline-block; width: 140px; }',
+        '@media print { body { padding: 20px; } }',
+        '</style></head><body>',
+        '<h1>Подтверждение брони</h1>',
+        '<div class="info"><span class="label">К кому:</span> ' + owner.username + '</div>',
+        '<div class="info"><span class="label">Имя клиента:</span> ' +
+          bookingData.guest.username +
+          '</div>',
+        '<div class="info"><span class="label">Email:</span> ' + bookingData.guest.email + '</div>',
+        ...(bookingData.guest.comment
+          ? [
+              '<div class="info"><span class="label">Комментарий:</span> ' +
+                bookingData.guest.comment +
+                '</div>',
+            ]
+          : []),
+        '<div class="info"><span class="label">Тип встречи:</span> ' +
+          bookingData.eventType.name +
+          '</div>',
+        '<div class="info"><span class="label">Дата:</span> ' +
+          dayjs(bookingData.timeSlot.timeStart).format('DD.MM.YYYY') +
+          '</div>',
+        '<div class="info"><span class="label">Время:</span> ' +
+          dayjs(bookingData.timeSlot.timeStart).format('HH:mm') +
+          ' — ' +
+          dayjs(bookingData.timeSlot.timeEnd).format('HH:mm') +
+          '</div>',
+        '<div class="info"><span class="label">Длительность:</span> ' +
+          bookingData.eventType.durationMinutes +
+          ' мин.</div>',
+        '</body></html>',
+      ].join('\n'),
+    );
+    win.document.close();
+    win.print();
+  };
+
+  return bookingStatus === 'idle' ? (
     <Card style={{ width: '100%' }}>
       <div
         style={{
@@ -191,7 +252,7 @@ export default function GuestBookingPage() {
                   onClick={() => onChange(dayjs(value).subtract(1, 'month'))}
                 />
                 <span style={{ fontWeight: 500, fontSize: 14 }}>
-                  {dayjs(value).format('MMMM YYYY')}
+                  {dayjs(value).locale('ru').format('MMMM YYYY')}
                 </span>
                 <Button
                   type="text"
@@ -330,6 +391,7 @@ export default function GuestBookingPage() {
         onCancel={() => setModalOpen(false)}
         onOk={() => form.submit()}
         okText="Записаться"
+        cancelText="Отменить"
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <Form.Item
@@ -354,6 +416,174 @@ export default function GuestBookingPage() {
           </Form.Item>
         </Form>
       </Modal>
+    </Card>
+  ) : bookingStatus === 'success' ? (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: 520,
+      }}
+    >
+      <Card style={{ maxWidth: 480, width: '100%' }}>
+        <Result status="success" title="Вы записаны" style={{ paddingBottom: 0 }} />
+        <div style={{ padding: '0 24px 24px' }}>
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontWeight: 600,
+                color: '#8c8c8c',
+                fontSize: 13,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: 4,
+              }}
+            >
+              К кому
+            </div>
+            <div style={{ fontSize: 16 }}>{owner?.username}</div>
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontWeight: 600,
+                color: '#8c8c8c',
+                fontSize: 13,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: 4,
+              }}
+            >
+              Имя клиента
+            </div>
+            <div style={{ fontSize: 16 }}>{bookingData?.guest.username}</div>
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontWeight: 600,
+                color: '#8c8c8c',
+                fontSize: 13,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: 4,
+              }}
+            >
+              Email
+            </div>
+            <div style={{ fontSize: 16 }}>{bookingData?.guest.email}</div>
+          </div>
+          {bookingData?.guest.comment && (
+            <div style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  fontWeight: 600,
+                  color: '#8c8c8c',
+                  fontSize: 13,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  marginBottom: 4,
+                }}
+              >
+                Комментарий
+              </div>
+              <div style={{ fontSize: 16 }}>{bookingData?.guest.comment}</div>
+            </div>
+          )}
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontWeight: 600,
+                color: '#8c8c8c',
+                fontSize: 13,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: 4,
+              }}
+            >
+              Тип встречи
+            </div>
+            <div style={{ fontSize: 16 }}>{bookingData?.eventType.name}</div>
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontWeight: 600,
+                color: '#8c8c8c',
+                fontSize: 13,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: 4,
+              }}
+            >
+              Дата
+            </div>
+            <div style={{ fontSize: 16 }}>
+              {bookingData && dayjs(bookingData.timeSlot.timeStart).format('DD.MM.YYYY')}
+            </div>
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontWeight: 600,
+                color: '#8c8c8c',
+                fontSize: 13,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: 4,
+              }}
+            >
+              Время
+            </div>
+            <div style={{ fontSize: 16 }}>
+              {bookingData && dayjs(bookingData.timeSlot.timeStart).format('HH:mm')} —{' '}
+              {bookingData && dayjs(bookingData.timeSlot.timeEnd).format('HH:mm')}
+            </div>
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontWeight: 600,
+                color: '#8c8c8c',
+                fontSize: 13,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: 4,
+              }}
+            >
+              Длительность
+            </div>
+            <div style={{ fontSize: 16 }}>{bookingData?.eventType.durationMinutes} мин.</div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button type="primary" onClick={handlePrint}>
+              Распечатать
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </div>
+  ) : (
+    <Card style={{ width: '100%' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: 520,
+        }}
+      >
+        <Result
+          status="error"
+          title={errorText}
+          extra={
+            <Button type="primary" onClick={handleRetry}>
+              Попробовать ещё раз
+            </Button>
+          }
+        />
+      </div>
     </Card>
   );
 }

@@ -34,7 +34,11 @@ export default function OwnerCalendarPage() {
   if (loading) return <Spin size="large" style={{ display: 'block', marginTop: 80 }} />;
 
   return (
-    <Card title="Брони">
+    <Card
+      title="Брони"
+      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+      styles={{ header: { position: 'relative', zIndex: 1 }, body: { flex: 1, overflow: 'auto' } }}
+    >
       <Calendar cellRender={(value) => dateCellRender(value as Dayjs)} />
     </Card>
   );

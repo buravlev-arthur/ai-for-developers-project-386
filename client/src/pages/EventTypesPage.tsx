@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { Card, Table, Button, Modal, Form, InputNumber, Input, message } from 'antd';
 import { listEventTypes, createEventType } from '../api/endpoints';
 import type { EventType } from '../api/types';
@@ -45,11 +46,9 @@ export default function EventTypesPage() {
   return (
     <Card
       title="Типы событий"
-      extra={
-        <Button type="primary" onClick={() => setModalOpen(true)}>
-          Создать
-        </Button>
-      }
+      extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)} />}
+      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+      styles={{ header: { position: 'relative', zIndex: 1 }, body: { flex: 1, overflow: 'auto' } }}
     >
       <Table dataSource={eventTypes} columns={columns} rowKey="id" loading={loading} />
 
@@ -58,6 +57,8 @@ export default function EventTypesPage() {
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={() => form.submit()}
+        okText="Добавить"
+        cancelText="Отменить"
       >
         <Form form={form} layout="vertical" onFinish={handleCreate}>
           <Form.Item name="name" label="Название" rules={[{ required: true }]}>
@@ -67,7 +68,7 @@ export default function EventTypesPage() {
             <Input />
           </Form.Item>
           <Form.Item name="durationMinutes" label="Длительность (мин)" rules={[{ required: true }]}>
-            <InputNumber min={5} max={480} />
+            <InputNumber min={5} max={480} style={{ width: '100%' }} />
           </Form.Item>
         </Form>
       </Modal>
