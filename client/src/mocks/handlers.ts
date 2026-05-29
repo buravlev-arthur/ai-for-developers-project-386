@@ -32,11 +32,36 @@ const appointments: Appointment[] = [
 ];
 
 const slots: Slot[] = [
-  { id: 's1', timeStart: '2026-06-01T10:00:00Z', timeEnd: '2026-06-01T10:30:00Z' },
-  { id: 's2', timeStart: '2026-06-01T11:00:00Z', timeEnd: '2026-06-01T11:30:00Z' },
-  { id: 's3', timeStart: '2026-06-01T12:00:00Z', timeEnd: '2026-06-01T13:00:00Z' },
-  { id: 's4', timeStart: '2026-06-02T14:00:00Z', timeEnd: '2026-06-02T14:30:00Z' },
-  { id: 's5', timeStart: '2026-06-02T15:00:00Z', timeEnd: '2026-06-02T15:30:00Z' },
+  {
+    id: 's1',
+    timeStart: '2026-06-01T10:00:00Z',
+    timeEnd: '2026-06-01T10:30:00Z',
+    isAvailable: false,
+  },
+  {
+    id: 's2',
+    timeStart: '2026-06-01T11:00:00Z',
+    timeEnd: '2026-06-01T11:30:00Z',
+    isAvailable: true,
+  },
+  {
+    id: 's3',
+    timeStart: '2026-06-01T12:00:00Z',
+    timeEnd: '2026-06-01T13:00:00Z',
+    isAvailable: true,
+  },
+  {
+    id: 's4',
+    timeStart: '2026-06-02T14:00:00Z',
+    timeEnd: '2026-06-02T14:30:00Z',
+    isAvailable: true,
+  },
+  {
+    id: 's5',
+    timeStart: '2026-06-02T15:00:00Z',
+    timeEnd: '2026-06-02T15:30:00Z',
+    isAvailable: true,
+  },
 ];
 
 export const handlers = [

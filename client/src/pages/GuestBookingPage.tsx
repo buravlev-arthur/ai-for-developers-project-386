@@ -57,6 +57,7 @@ export default function GuestBookingPage() {
   }, [selectedType, selectedDate]);
 
   const handleBook = (slot: Slot) => {
+    if (!slot.isAvailable) return;
     setSelectedSlot(slot);
     setModalOpen(true);
   };
@@ -114,8 +115,13 @@ export default function GuestBookingPage() {
             renderItem={(slot) => (
               <List.Item
                 actions={[
-                  <Button key="book" type="primary" onClick={() => handleBook(slot)}>
-                    Забронировать
+                  <Button
+                    key="book"
+                    type="primary"
+                    disabled={!slot.isAvailable}
+                    onClick={() => handleBook(slot)}
+                  >
+                    {slot.isAvailable ? 'Забронировать' : 'Занято'}
                   </Button>,
                 ]}
               >

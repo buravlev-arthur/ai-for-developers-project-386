@@ -4,6 +4,7 @@ model Slot {
   id: string;
   timeStart: utcDateTime;
   timeEnd: utcDateTime;
+  isAvailable: boolean;
 }
 
 model CreateAppointmentRequest {

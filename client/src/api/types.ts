@@ -46,4 +46,5 @@ export interface Slot {
   id: string;
   timeStart: string;
   timeEnd: string;
+  isAvailable: boolean;
 }

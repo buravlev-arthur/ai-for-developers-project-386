@@ -215,6 +215,7 @@ components:
         - id
         - timeStart
         - timeEnd
+        - isAvailable
       properties:
         id:
           type: string
@@ -224,6 +225,8 @@ components:
         timeEnd:
           type: string
           format: date-time
+        isAvailable:
+          type: boolean
     Time:
       type: string
       format: HH:mm
