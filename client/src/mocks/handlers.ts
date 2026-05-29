@@ -4,7 +4,7 @@ import type { Owner, EventType, Appointment, Slot } from '../api/types';
 const owner: Owner = {
   id: '1',
   email: 'owner@example.com',
-  username: 'Владелец календаря',
+  username: 'Буравлев Артур',
   description: 'Организатор мероприятий',
   workTimeStart: '09:00',
   workTimeEnd: '18:00',
