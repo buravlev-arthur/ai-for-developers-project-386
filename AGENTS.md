@@ -22,6 +22,7 @@ client/
 │   │   └── types.ts           # TypeScript-интерфейсы (из openapi.yaml)
 │   ├── components/            # Переиспользуемые компоненты
 │   │   ├── AppHeader.tsx      # Шапка с логотипом CalMe и навигацией
+│   │   ├── PageContent.tsx    # Контейнер с отступами и высотой для контента страниц
 │   │   ├── GuestLayout.tsx    # Layout для гостевой страницы (AppHeader + контент)
 │   │   └── OwnerLayout.tsx    # Layout панели владельца (AppHeader + Sider)
 │   ├── mocks/                 # MSW-заглушки
