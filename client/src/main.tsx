@@ -4,8 +4,9 @@ import App from './App';
 import './index.css';
 
 async function start() {
-  const { worker } = await import('./mocks/browser');
-  await worker.start({ onUnhandledRequest: 'bypass' });
+  // MSW mock server — раскомментировать для включения моков вместо реального бэкенда
+  // const { worker } = await import('./mocks/browser');
+  // await worker.start({ onUnhandledRequest: 'bypass' });
 
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

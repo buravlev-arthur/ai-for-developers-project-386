@@ -2,7 +2,7 @@
 
 Это календарь событий - проект, где гости могут бронировать время события. А один единственный владелец календаря может создавать типы событий и просматривать в календаре созданные брони гостей.
 
-OpenAPI-спецификация хранится в: `docs/openapi.yaml`.
+API-спецификация хранится в: `docs/openapi.yaml`.
 Исходные файлы TypeSpec-спецификации и API-контракта хранятся в: `api/main.tsp`.
 
 ## Фронтенд
@@ -72,3 +72,43 @@ npm run client:format         # Форматирование Prettier
 - Работа с API-запросами: **axios**;
 - Линтер: **ESLint 9+** (flat config);
 - Форматирование: **Prettier**.
+
+## Бэкенд
+
+Бэкенд-часть расположена в директории `backend/`.
+
+### Структура
+
+```
+backend/
+├── src/
+│   ├── index.ts            # Точка входа (Express-сервер, роуты API)
+│   ├── types.ts            # TypeScript-интерфейсы (Owner, EventType, Slot, Appointment и др.)
+│   ├── store.ts            # In-memory хранилище и функции (CRUD)
+│   └── slots.ts            # Генерация временных слотов для бронирования
+├── package.json
+└── tsconfig.json
+```
+
+### Команды
+
+```bash
+# Запуск dev-сервера бэкенда (без hot-reload)
+npm run server:start
+
+# Запуск фронтенда и бэкенда одновременно
+npm run dev
+
+# Dev-сервер с hot-reload (из директории backend/)
+cd backend && npm run dev
+```
+
+### Стек технологий
+
+- Язык: **TypeScript**;
+- Среда выполнения: **Node.js**;
+- Веб-фреймворк: **Express**;
+- Запуск и hot-reload: **tsx** (TypeScript Execute);
+- Хранилище: **In-memory** (без внешней БД);
+- CORS- middleware: **cors**.
+

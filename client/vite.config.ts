@@ -7,4 +7,9 @@ export default defineConfig({
     react(),
     checker({ eslint: { lintCommand: 'eslint "src/**/*.{ts,tsx}"' } }),
   ],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3001',
+    },
+  },
 });
