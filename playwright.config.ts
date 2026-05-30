@@ -15,7 +15,8 @@ export default defineConfig({
       reuseExistingServer: true,
     },
     {
-      command: 'set VITE_E2E=true && npm run client:dev',
+      command: 'npm run client:dev',
+      env: { VITE_E2E: 'true' },
       port: 5173,
       timeout: 30_000,
       reuseExistingServer: true,
