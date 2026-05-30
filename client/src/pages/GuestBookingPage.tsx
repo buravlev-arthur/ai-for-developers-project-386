@@ -130,12 +130,15 @@ export default function GuestBookingPage() {
   };
 
   return bookingStatus === 'idle' ? (
-    <Card style={{ width: '100%' }}>
+    <Card
+      style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
+      styles={{ body: { flex: 1, overflow: 'hidden' } }}
+    >
       <div
         style={{
           display: 'flex',
           gap: 0,
-          minHeight: 520,
+          height: '100%',
         }}
       >
         {/* ========== LEFT: Owner + Event Types ========== */}
@@ -147,6 +150,7 @@ export default function GuestBookingPage() {
             display: 'flex',
             flexDirection: 'column',
             flexShrink: 0,
+            minHeight: 0,
           }}
         >
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
@@ -175,7 +179,7 @@ export default function GuestBookingPage() {
               letterSpacing: '0.5px',
             }}
           >
-            Типы встреч
+            Тип встречи
           </div>
 
           <div style={{ flex: 1, overflowY: 'auto' }}>
@@ -226,10 +230,22 @@ export default function GuestBookingPage() {
             borderRight: '1px solid #f0f0f0',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             flexShrink: 0,
           }}
         >
+          <div
+            style={{
+              fontWeight: 500,
+              marginBottom: 12,
+              color: '#8c8c8c',
+              fontSize: 13,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+            }}
+          >
+            Доступные даты
+          </div>
           <Calendar
             fullscreen={false}
             defaultValue={dayjs()}
@@ -278,6 +294,7 @@ export default function GuestBookingPage() {
             flexDirection: 'column',
             flexShrink: 0,
             minWidth: 0,
+            minHeight: 0,
           }}
         >
           <div

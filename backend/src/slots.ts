@@ -1,8 +1,8 @@
-import type { Slot } from './types';
+import type { DayOfWeek, Slot } from './types';
 import type { Store } from './store';
 import { getEventTypeById } from './store';
 
-const DAY_NAMES: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAY_NAMES: DayOfWeek[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function parseTimeToMinutes(time: string): number {
   const [h, m] = time.split(':').map(Number);
@@ -21,10 +21,7 @@ function minutesToDate(totalMinutes: number, dateStr: string): Date {
   return d;
 }
 
-function slotsOverlap(
-  start1: Date, end1: Date,
-  start2: Date, end2: Date,
-): boolean {
+function slotsOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
   return start1 < end2 && end1 > start2;
 }
 
@@ -36,7 +33,7 @@ export function generateSlots(store: Store, eventTypeId: string, dateStr: string
   const date = new Date(dateStr + 'T00:00:00.000Z');
   const dayOfWeek = DAY_NAMES[date.getUTCDay()];
 
-  if (!owner.workDays.includes(dayOfWeek as any)) return [];
+  if (!owner.workDays.includes(dayOfWeek)) return [];
 
   const workStart = parseTimeToMinutes(owner.workTimeStart);
   const workEnd = parseTimeToMinutes(owner.workTimeEnd);

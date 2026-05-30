@@ -1,6 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { createStore, getEventTypeById, createEventType, listAppointments, addAppointment } from './store';
+import {
+  createStore,
+  getEventTypeById,
+  createEventType,
+  listAppointments,
+  addAppointment,
+} from './store';
 import { generateSlots } from './slots';
 
 const app = express();
@@ -49,7 +55,9 @@ app.post('/api/appointments', (req, res) => {
   const { eventTypeId, timeSlotId, guest } = req.body;
 
   if (!eventTypeId || !timeSlotId || !guest?.email || !guest?.username) {
-    return res.status(400).json({ error: 'eventTypeId, timeSlotId, guest.email, and guest.username are required' });
+    return res
+      .status(400)
+      .json({ error: 'eventTypeId, timeSlotId, guest.email, and guest.username are required' });
   }
 
   const eventType = getEventTypeById(store, eventTypeId);

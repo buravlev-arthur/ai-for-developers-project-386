@@ -101,6 +101,11 @@ npm run dev
 
 # Dev-сервер с hot-reload (из директории backend/)
 cd backend && npm run dev
+
+# Линтинг и форматирование
+npm run server:lint           # Проверка ESLint
+npm run server:lint:fix       # Автоисправление ESLint
+npm run server:format         # Форматирование Prettier
 ```
 
 ### Стек технологий

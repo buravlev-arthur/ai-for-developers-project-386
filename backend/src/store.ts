@@ -20,7 +20,12 @@ export function createStore(): Store {
       workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
     },
     eventTypes: [
-      { id: '1', name: 'Консультация', description: 'Индивидуальная консультация', durationMinutes: 30 },
+      {
+        id: '1',
+        name: 'Консультация',
+        description: 'Индивидуальная консультация',
+        durationMinutes: 30,
+      },
       { id: '2', name: 'Встреча', description: null, durationMinutes: 60 },
       { id: '3', name: 'Вебинар', description: 'Групповой онлайн-вебинар', durationMinutes: 90 },
     ],
@@ -58,7 +63,11 @@ export function listAppointments(store: Store): Appointment[] {
 
 export function addAppointment(
   store: Store,
-  data: { eventType: EventType; timeSlot: { id: string; timeStart: string; timeEnd: string }; guest: Guest },
+  data: {
+    eventType: EventType;
+    timeSlot: { id: string; timeStart: string; timeEnd: string };
+    guest: Guest;
+  },
 ): Appointment {
   const appointment: Appointment = {
     id: String(store.nextAppointmentId++),
