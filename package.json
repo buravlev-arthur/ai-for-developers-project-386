@@ -19,6 +19,7 @@
     "server:lint": "npm run lint -w backend",
     "server:lint:fix": "npm run lint:fix -w backend",
     "server:format": "npm run format -w backend",
+    "install:all": "npm ci",
     "dev": "concurrently \"npm run client:dev\" \"npm run server:start\"",
     "test:e2e": "playwright test",
     "test:e2e:debug": "playwright test --debug",
